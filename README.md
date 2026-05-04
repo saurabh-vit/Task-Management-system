@@ -2,35 +2,41 @@
 
 Ethara Tasks is a secure, multi-user task management system built with Next.js 16, Prisma 7, SQLite, JWT authentication, and role-based access control. It is designed to feel production-ready: users can sign in securely, manage work from a Kanban-style dashboard, and collaborate through a clear Admin / Manager / User permission model.
 
+## 🌐 Live Demo
+
+👉 https://task-management-system-production-54fc.up.railway.app/
+
+> ⚠️ **Note:**  
+> If the site does not open on your network, try using a **VPN** or switch to a network with **American (US) DNS**, as some networks may block Railway domains.
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🔐 Authentication & Security
+### Authentication & Security
 - Secure JWT-based authentication using HTTP-only cookies
 - Password hashing with bcrypt
 - Input validation with zod
 - Session-based access control with route protection
 - First registered user is automatically assigned as Admin
 
-### 👥 Role-Based Access Control
+### Role-Based Access Control
 - **Admin**: full system control over users, roles, tasks, and access management
 - **Manager**: create, assign, and manage tasks across the workspace
 - **User**: view and update assigned tasks
 
-### 📊 Task Management Dashboard
+### Task Management Dashboard
 - Interactive Kanban board
 - Task creation, editing, reassignment, and deletion
 - Quick status updates with optimistic UI behavior
 - Search and filtering by status, priority, and assignee
 - Task statistics overview for the currently visible set
 
-### 🛠 Team Access Panel
+### Team Access Panel
 - Manage team members from a single admin panel
 - Change user roles without leaving the dashboard
 - Role changes apply on the next sign-in
 
-### 📜 Audit Logging
+### Audit Logging
 Tracks:
 - Login and logout events
 - Task creation, updates, and deletion
@@ -39,7 +45,7 @@ Tracks:
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 - **Frontend:** Next.js 16, React 19
 - **Backend:** Next.js Server Actions
@@ -51,7 +57,7 @@ Tracks:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 src/
@@ -117,7 +123,7 @@ public/                           # Static assets
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 ### 1. Clone the repository
 
@@ -171,7 +177,7 @@ npm run db:studio
 
 ---
 
-## 📌 Available Scripts
+## Available Scripts
 
 ```bash
 npm run dev        # Start the development server
@@ -183,7 +189,7 @@ npm run typecheck  # Run TypeScript checks
 
 ---
 
-## 🔄 Application Flow
+## Application Flow
 
 ### Authentication Flow
 
@@ -265,7 +271,7 @@ flowchart TD
 
 ---
 
-## 🧠 Core Concepts Used
+## Core Concepts Used
 
 - Role-Based Access Control (RBAC)
 - Next.js Server Actions
@@ -276,7 +282,7 @@ flowchart TD
 
 ---
 
-## 🎯 Why This Project Stands Out
+## Why This Project Stands Out
 
 - Production-ready security model with JWT, bcrypt, and protected routes
 - Clean, scalable architecture with clear separation of concerns
@@ -286,7 +292,7 @@ flowchart TD
 
 ---
 
-## 🚀 Future Improvements
+## Future Improvements
 
 - Real-time notifications
 - Mobile responsiveness improvements
@@ -296,7 +302,7 @@ flowchart TD
 
 ---
 
-## 📄 License
+## License
 
 MIT License
 
