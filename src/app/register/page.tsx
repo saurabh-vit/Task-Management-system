@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { registerUser } from "@/app/auth-actions";
 import { pickSearchParam } from "@/lib/action-utils";
 import { getSession } from "@/lib/auth/session";
-import { countUsers } from "@/lib/auth/users";
 
 interface RegisterPageProps {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -24,8 +23,6 @@ export default async function RegisterPage({
   const resolvedSearchParams = (await searchParams) ?? {};
   const next = pickSearchParam(resolvedSearchParams.next);
   const error = pickSearchParam(resolvedSearchParams.error);
-  const totalUsers = await countUsers();
-  const assignedRole = totalUsers === 0 ? "Admin" : "User";
 
   return (
     <main className="app-viewport min-h-screen px-5 py-7 text-slate-950 sm:px-8">
@@ -135,12 +132,13 @@ export default async function RegisterPage({
                 <div>
                   <p className="font-semibold text-slate-900">Role</p>
                   <p className="mt-1 text-sm leading-6 text-slate-500">
-                    Assigned automatically to keep the access model secure.
+                    The first account becomes Admin. Later accounts start as
+                    User.
                   </p>
                 </div>
-                <div className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${assignedRole === "Admin" ? "from-amber-400 via-orange-500 to-rose-500" : "from-sky-500 via-cyan-500 to-emerald-500"} px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(59,130,246,0.25)]`}>
+                <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(59,130,246,0.25)]">
                   <span className="h-2.5 w-2.5 rounded-full bg-white/90" />
-                  {assignedRole}
+                  Automatic
                 </div>
               </div>
             </div>
