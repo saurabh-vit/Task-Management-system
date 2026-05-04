@@ -68,8 +68,8 @@ model Task {
   id          String           @id @default(cuid())
   title       String
   description String?
-  status      TaskStatus       @default("To Do")
-  priority    TaskPriority     @default("Medium")
+  status      TaskStatus       @default(TODO)
+  priority    TaskPriority     @default(MEDIUM)
   dueDate     DateTime?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
@@ -87,7 +87,7 @@ model TaskAssignment {
   taskId      String
   userId      String
   assignedAt  DateTime        @default(now())
-  projectRole TaskProjectRole @default("ASSIGNEE")
+  projectRole TaskProjectRole @default(ASSIGNEE)
   user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   task        Task            @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
@@ -111,17 +111,17 @@ model AuditLog {
 }
 
 enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  IN_REVIEW
-  DONE
+  TODO        @map("To Do")
+  IN_PROGRESS @map("In Progress")
+  IN_REVIEW   @map("In Review")
+  DONE        @map("Done")
 }
 
 enum TaskPriority {
-  LOW
-  MEDIUM
-  HIGH
-  URGENT
+  LOW    @map("Low")
+  MEDIUM @map("Medium")
+  HIGH   @map("High")
+  URGENT @map("Urgent")
 }
 
 enum TaskProjectRole {
