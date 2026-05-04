@@ -1,0 +1,141 @@
+generator client {
+  provider   = "prisma-client"
+  output     = "../src/generated/prisma"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum TaskStatus {
+  TODO        @map("To Do")
+  IN_PROGRESS @map("In Progress")
+  IN_REVIEW   @map("In Review")
+  DONE        @map("Done")
+}
+
+enum TaskPriority {
+  LOW    @map("Low")
+  MEDIUM @map("Medium")
+  HIGH   @map("High")
+  URGENT @map("Urgent")
+}
+
+enum TaskProjectRole {
+  OWNER
+  ASSIGNEE
+  REVIEWER
+  OBSERVER
+}
+
+enum AuditActionType {
+  CREATE
+  READ
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+}
+
+model User {
+  id              String           @id @default(cuid())
+  name            String?
+  email           String           @unique
+  passwordHash    String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  userRoles       UserRole[]
+  taskAssignments TaskAssignment[]
+  auditLogs       AuditLog[]
+  createdTasks    Task[]           @relation("TaskCreator")
+
+  @@index([email])
+}
+
+model Role {
+  id              String           @id @default(cuid())
+  name            String           @unique
+  description     String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+}
+
+model Permission {
+  id              String           @id @default(cuid())
+  key             String           @unique
+  description     String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  rolePermissions RolePermission[]
+}
+
+model UserRole {
+  userId     String
+  roleId     String
+  assignedAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@index([roleId])
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  assignedAt   DateTime   @default(now())
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+}
+
+model Task {
+  id          String           @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus       @default(TODO)
+  priority    TaskPriority     @default(MEDIUM)
+  dueDate     DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  createdById String
+  createdBy   User             @relation("TaskCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  assignments TaskAssignment[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+  @@index([createdById])
+}
+
+model TaskAssignment {
+  taskId      String
+  userId      String
+  assignedAt  DateTime        @default(now())
+  projectRole TaskProjectRole @default(ASSIGNEE)
+  task        Task            @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, userId])
+  @@index([userId])
+  @@index([projectRole])
+}
+
+model AuditLog {
+  id          String          @id @default(cuid())
+  timestamp   DateTime        @default(now())
+  userId      String
+  actionType  AuditActionType
+  resourceType String
+  resourceId  String
+  details     Json?
+  user        User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId, timestamp])
+  @@index([resourceType, resourceId])
+}

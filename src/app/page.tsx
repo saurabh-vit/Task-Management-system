@@ -1,65 +1,112 @@
-import Image from "next/image";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+import { getSession } from "@/lib/auth/session";
+
+const featureCards = [
+  ["Auth", "JWT + bcrypt"],
+  ["Storage", "SQLite + Prisma"],
+  ["Access", "Admin, Manager, User"],
+] as const;
+
+const roleCards = [
+  ["Admin", "Manage users, roles, tasks, and audit visibility."],
+  ["Manager", "Create, assign, and move team work through stages."],
+  ["User", "Track assigned tasks and update progress clearly."],
+] as const;
+
+export default async function Home() {
+  const session = await getSession();
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+    <main className="app-viewport min-h-screen px-5 py-7 text-slate-950 sm:px-8">
+      <div className="app-grid-overlay" />
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-8">
+        <header className="glass-card tilt-panel animate-entrance-rise rounded-[30px] px-7 py-6 animate-entrance-delay-1">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-mono text-sm uppercase tracking-[0.36em] text-sky-600">
+                Assessment Build
+              </p>
+              <h1 className="mt-3 text-3xl font-semibold">
+                Team Task Manager
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-[20px] bg-gradient-to-br from-violet-500 via-sky-500 to-cyan-400 shadow-[0_18px_40px_rgba(59,130,246,0.24)]" />
+              <div>
+                <p className="text-lg font-semibold">Next.js + SQLite + JWT</p>
+                <p className="text-sm text-slate-500">
+                  Secure RBAC task workflow
+                </p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <section className="glass-card tilt-panel animate-entrance-rise rounded-[36px] px-7 py-10 sm:px-10 lg:px-12 animate-entrance-delay-2">
+          <span className="inline-flex rounded-full border border-sky-200 bg-sky-50 px-4 py-2 font-mono text-sm uppercase tracking-[0.28em] text-sky-700 depth-ring">
+            Ship Mode
+          </span>
+
+          <div className="mt-8 max-w-5xl space-y-6">
+            <h2 className="text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
+              Manage projects, tasks, and team status without leaving the
+              browser.
+            </h2>
+            <p className="max-w-3xl text-lg leading-8 text-slate-600">
+              Create an admin account, assign work to members, and track
+              progress from a live dashboard that stays in sync with the
+              backend.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {featureCards.map(([label, value]) => (
+              <article
+                key={label}
+                className="glass-card tilt-panel rounded-[28px] px-6 py-5"
+              >
+                <p className="text-base text-slate-500">{label}</p>
+                <p className="mt-3 text-2xl font-semibold">{value}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="glass-card tilt-panel animate-entrance-rise rounded-[36px] p-7 sm:p-8 animate-entrance-delay-3">
+          <div className="grid rounded-[24px] bg-white/90 p-2 shadow-inner shadow-slate-200/70 sm:grid-cols-2 depth-ring">
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="/register"
+              className="inline-flex min-h-14 items-center justify-center rounded-[18px] bg-gradient-to-r from-violet-600 via-blue-500 to-cyan-500 px-6 text-base font-semibold text-white shadow-[0_18px_50px_rgba(59,130,246,0.24)]"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
+              Sign up
+            </a>
             <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="/login"
+              className="inline-flex min-h-14 items-center justify-center rounded-[16px] px-6 text-base font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+              Log in
+            </a>
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+            {roleCards.map(([role, copy]) => (
+              <article
+                key={role}
+                className="glass-card tilt-panel rounded-[24px] px-5 py-5"
+              >
+                <p className="text-xl font-semibold">{role}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{copy}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }
