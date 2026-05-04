@@ -4,6 +4,7 @@ import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 import { PrismaClient } from "@/generated/prisma/client";
 import { databaseEnv } from "@/lib/env";
+import { normalizeSqliteDatabaseUrl } from "@/lib/db/sqlite";
 
 const globalForPrisma = globalThis as typeof globalThis & {
   prisma?: PrismaClient;
@@ -11,7 +12,7 @@ const globalForPrisma = globalThis as typeof globalThis & {
 
 function createPrismaClient() {
   const adapter = new PrismaBetterSqlite3({
-    url: databaseEnv.DATABASE_URL,
+    url: normalizeSqliteDatabaseUrl(databaseEnv.DATABASE_URL),
   });
 
   return new PrismaClient({

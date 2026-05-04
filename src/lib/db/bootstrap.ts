@@ -7,6 +7,7 @@ import path from "node:path";
 import Database from "better-sqlite3";
 
 import { databaseEnv } from "@/lib/env";
+import { resolveSqliteFilePath } from "@/lib/db/sqlite";
 
 const permissionsByRole = {
   Admin: [
@@ -37,22 +38,6 @@ const permissionDescriptions = {
 const globalForDatabaseBootstrap = globalThis as typeof globalThis & {
   databaseReadyPromise?: Promise<void>;
 };
-
-function resolveSqliteFilePath(url: string) {
-  if (!url.startsWith("file:")) {
-    throw new Error("Only file-based SQLite URLs are supported in this app.");
-  }
-
-  const filePath = url.slice("file:".length);
-
-  if (!filePath) {
-    throw new Error("The SQLite DATABASE_URL is missing a file path.");
-  }
-
-  return path.isAbsolute(filePath)
-    ? filePath
-    : path.resolve(/* turbopackIgnore: true */ process.cwd(), filePath);
-}
 
 function readMigrationSql() {
   const migrationFile = path.join(
