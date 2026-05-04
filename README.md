@@ -161,7 +161,7 @@ The database is bootstrapped automatically on first use. If the SQLite file does
 
 ---
 
-## 🗄 Database
+## Database
 
 This project uses SQLite with Prisma ORM.
 
@@ -308,6 +308,6 @@ MIT License
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 Saurabh Raj
