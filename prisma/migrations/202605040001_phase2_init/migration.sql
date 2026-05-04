@@ -79,7 +79,7 @@ CREATE TABLE "AuditLog" (
     "actionType" TEXT NOT NULL,
     "resourceType" TEXT NOT NULL,
     "resourceId" TEXT NOT NULL,
-    "details" JSONB,
+    "details" TEXT,
     CONSTRAINT "AuditLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 

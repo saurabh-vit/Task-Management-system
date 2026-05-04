@@ -120,7 +120,7 @@ CREATE TABLE "AuditLog" (
     "actionType" TEXT NOT NULL,
     "resourceType" TEXT NOT NULL,
     "resourceId" TEXT NOT NULL,
-    "details" JSONB,
+    "details" TEXT,
     CONSTRAINT "AuditLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -247,7 +247,15 @@ function seedAccessControl(db: InstanceType<typeof Database>) {
 async function bootstrapDatabase() {
   const databasePath = resolveSqliteFilePath(databaseEnv.DATABASE_URL);
 
-  fs.mkdirSync(path.dirname(databasePath), { recursive: true });
+  try {
+    fs.mkdirSync(path.dirname(databasePath), { recursive: true });
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code !== "EEXIST") {
+      throw new Error(
+        `Failed to create database directory at ${path.dirname(databasePath)}: ${error.message}`
+      );
+    }
+  }
 
   const db = new Database(databasePath);
 
@@ -264,10 +272,35 @@ async function bootstrapDatabase() {
       .get();
 
     if (!hasUserTable) {
-      db.exec(MIGRATION_SQL);
+      try {
+        db.exec(MIGRATION_SQL);
+      } catch (error) {
+        throw new Error(
+          `Migration failed: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
+
+      // Verify migration succeeded
+      const verifyUserTable = db
+        .prepare(`
+          SELECT name
+          FROM sqlite_master
+          WHERE type = 'table' AND name = 'User'
+        `)
+        .get();
+
+      if (!verifyUserTable) {
+        throw new Error("Migration completed but User table was not created");
+      }
     }
 
-    seedAccessControl(db);
+    try {
+      seedAccessControl(db);
+    } catch (error) {
+      throw new Error(
+        `Seed failed: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
   } finally {
     db.close();
   }
