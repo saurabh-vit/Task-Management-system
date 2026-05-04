@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+// If running in production on hosts like Railway and no DATABASE_URL is provided,
+// default to a file path under `/data` which is the conventional mount point
+// for project volumes. This keeps SQLite working with an attached Volume.
+if (!process.env.DATABASE_URL && process.env.NODE_ENV === "production") {
+  process.env.DATABASE_URL = "file:/data/app.db";
+}
+
 const authEnvSchema = z.object({
   JWT_SECRET: z
     .string()
